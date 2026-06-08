@@ -19,9 +19,11 @@ logger = logging.getLogger("a2s")
 
 async def request_async(address, timeout, encoding, a2s_proto):
     conn = await A2SStreamAsync.create(address, timeout)
-    response = await request_async_impl(conn, encoding, a2s_proto)
-    conn.close()
-    return response
+    try:
+        response = await request_async_impl(conn, encoding, a2s_proto)
+        return response
+    finally:
+        conn.close()
 
 async def request_async_impl(conn, encoding, a2s_proto, challenge=0, retries=0, ping=None):
     send_time = time.monotonic()

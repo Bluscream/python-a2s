@@ -19,9 +19,11 @@ logger = logging.getLogger("a2s")
 
 def request_sync(address, timeout, encoding, a2s_proto):
     conn = A2SStream(address, timeout)
-    response = request_sync_impl(conn, encoding, a2s_proto)
-    conn.close()
-    return response
+    try:
+        response = request_sync_impl(conn, encoding, a2s_proto)
+        return response
+    finally:
+        conn.close()
 
 def request_sync_impl(conn, encoding, a2s_proto, challenge=0, retries=0, ping=None):
     send_time = time.monotonic()
